@@ -1,1 +1,1 @@
-
+El objetivo del proyecto es modernizar la infraestructura de datos, poblar una base PostgreSQL desde cero con más de 500.000 datos sintéticos realistas, garantizar integridad total y preparar la base para análisis operativos avanzados.
