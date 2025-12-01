@@ -1,0 +1,5 @@
+model_id,model_name,capacity_kg,fuel_type
+1,Van,1500,gasolina
+2,Camión Grande,5000,diesel
+3,Camión Mediano,3000,diesel
+4,Motocicleta,50,gasolina
