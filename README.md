@@ -135,30 +135,28 @@ erDiagram
 
 ## Ejecución
 
-Para levantar y validar el proyecto FleetLogix:
+1. Abrir PowerShell.
+2. Ir a la ubicación local de los scripts ejemplo: cd "RUTA\LOCAL\DE\LA\CARPETA"
+Enter.
+3. .\run_fleetlogix.ps1
+Enter.
+Si solicita contraseña es la definida en el script .py (puede pedirla una vez antes de crear la DB y otra vez antes de crear el esquema, es la misma ambas veces ya que es la del usuario).
+4. Crear una nueva conexión para visualizar el esquema en DBeaver:
+- Database -> New Database Connection -> PostgreSQL ->
+- Rellenar con los parámetros definidos en el script:
+Host: localhost
+Port: 5432
+Database: fleetlogixdb
+Username: postgres
+Password: fede0309
 
-1. Crear la base de datos en PostgreSQL:
-   - Conectarse al servidor PostgreSQL desde DBeaver o psql.
-   - Ejecutar el script `fleetlogix_db_schema.sql` para crear las tablas.
-
-2. Generar datos sintéticos
-   - Ejecutar el script principal:
-     ```bash
-     python fleetlogix_data_generator.py
-     ```
-   - Se generarán más de 500.000 registros distribuidos en las 6 tablas.
-
-3. Verificar carga de datos
-   - Abrir DBeaver y conectarse a la base `fleetlogix`.
-   - Validar conteo de registros:
-     ```sql
-     SELECT COUNT(*) FROM trips;
-     SELECT COUNT(*) FROM deliveries;
-     ```
-   - Revisar logs en `data_generation.log` y resumen en `generation_summary.json`.
+5. Verificar carga de datos
+- En la misma DB abrir y ejecutrar las siguientes queries en cualquier orden, una a una o todas juntas:
+'01_InventarioDeTablasPKsFKsIndices'
+'02_ValidacionesCalidadConsistencia.sql'
+'03_KPIsOperativosConsultasClave.sql'
 
 ---
-
 ## Autor
 Federico Ceballos Torres.
 

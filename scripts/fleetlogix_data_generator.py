@@ -27,7 +27,7 @@ logging.basicConfig(
 # Configuración de conexión
 DB_CONFIG = {
     'host': 'localhost',
-    'database': 'fleetlogix',
+    'database': 'fleetlogixdb',
     'user': 'postgres',
     'password': 'fede0309',  # Cambiar por tu contraseña
     'port': 5432
