@@ -63,3 +63,10 @@ FROM vehicles v
 LEFT JOIN km_per_vehicle k ON k.vehicle_id = v.vehicle_id
 LEFT JOIN maint_per_vehicle m ON m.vehicle_id = v.vehicle_id
 ORDER BY maint_per_1000km DESC NULLS LAST;
+
+-- Promedio de entregas por viaje
+SELECT 
+    ROUND(CAST(COUNT(*) AS numeric) / CAST((SELECT COUNT(*) FROM trips) AS numeric), 2) 
+    AS promedio_entregas_por_viaje
+FROM deliveries;
+
