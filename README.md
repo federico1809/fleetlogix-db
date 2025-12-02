@@ -1,1 +1,1 @@
-El objetivo del proyecto es modernizar la infraestructura de datos, poblar una base PostgreSQL desde cero con más de 500.000 datos sintéticos realistas, garantizar integridad total y preparar la base para análisis operativos avanzados.
+El trabajo incluye la generación de más de 500.000 registros sintéticos realistas, el diseño y documentación del modelo relacional, la implementación de validaciones de calidad y KPIs operativos, y la propuesta de una arquitectura cloud escalable para análisis en tiempo real.
