@@ -56,8 +56,8 @@ Este modelo permite responder preguntas como:
 ---
 
 ## Diagrama Mermaid del modelo estrella
-
 erDiagram
+
     fact_deliveries ||--o{ dim_vehicle : "utiliza"
     fact_deliveries ||--o{ dim_driver : "realizado por"
     fact_deliveries ||--o{ dim_route : "recorre"
