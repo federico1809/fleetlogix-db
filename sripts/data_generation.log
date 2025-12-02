@@ -1,0 +1,89 @@
+2025-12-01 19:43:20,639 - INFO -  Conexión exitosa a PostgreSQL
+2025-12-01 19:43:20,640 - INFO - Generando 200 vehículos...
+2025-12-01 19:43:20,704 - INFO -  200 vehículos insertados
+2025-12-01 19:43:20,705 - INFO - Generando 400 conductores...
+2025-12-01 19:43:20,990 - INFO -  400 conductores insertados
+2025-12-01 19:43:20,990 - INFO - Generando 50 rutas...
+2025-12-01 19:43:21,002 - INFO -  50 rutas insertadas
+2025-12-01 19:43:21,002 - INFO - Generando 100000 viajes...
+2025-12-01 19:43:32,372 - INFO -   Progreso: 0/100000 trips insertados
+2025-12-01 19:43:34,421 - INFO -   Progreso: 10000/100000 trips insertados
+2025-12-01 19:43:36,331 - INFO -   Progreso: 20000/100000 trips insertados
+2025-12-01 19:43:38,276 - INFO -   Progreso: 30000/100000 trips insertados
+2025-12-01 19:43:40,009 - INFO -   Progreso: 40000/100000 trips insertados
+2025-12-01 19:43:41,739 - INFO -   Progreso: 50000/100000 trips insertados
+2025-12-01 19:43:43,533 - INFO -   Progreso: 60000/100000 trips insertados
+2025-12-01 19:43:45,331 - INFO -   Progreso: 70000/100000 trips insertados
+2025-12-01 19:43:47,056 - INFO -   Progreso: 80000/100000 trips insertados
+2025-12-01 19:43:49,421 - INFO -   Progreso: 90000/100000 trips insertados
+2025-12-01 19:43:52,014 - INFO -  100000 viajes insertados
+2025-12-01 19:43:52,045 - INFO - Generando 400000 entregas...
+2025-12-01 19:46:19,988 - ERROR -  Error durante la generación: schema "np" does not exist
+LINE 5: ...olina Castro Cuesta', 'Calle 169Z # 40-23, Cali', np.float64...
+                                                             ^
+
+2025-12-01 19:46:20,201 - INFO - 
+ Conexión cerrada
+2025-12-01 19:55:15,500 - INFO -  Conexión exitosa a PostgreSQL
+2025-12-01 19:55:15,501 - INFO - Generando 200 vehículos...
+2025-12-01 19:55:15,563 - ERROR -  Error durante la generación: duplicate key value violates unique constraint "vehicles_license_plate_key"
+DETAIL:  Key (license_plate)=(UDA125) already exists.
+
+2025-12-01 19:55:15,564 - INFO - 
+ Conexión cerrada
+2025-12-01 19:58:19,870 - INFO -  Conexión exitosa a PostgreSQL
+2025-12-01 19:58:19,870 - INFO - Generando 200 vehículos...
+2025-12-01 19:58:19,920 - INFO -  200 vehículos insertados
+2025-12-01 19:58:19,920 - INFO - Generando 400 conductores...
+2025-12-01 19:58:20,108 - INFO -  400 conductores insertados
+2025-12-01 19:58:20,108 - INFO - Generando 50 rutas...
+2025-12-01 19:58:20,119 - INFO -  50 rutas insertadas
+2025-12-01 19:58:20,119 - INFO - Generando 100000 viajes...
+2025-12-01 19:58:31,553 - INFO -   Progreso: 0/100000 trips insertados
+2025-12-01 19:58:33,915 - INFO -   Progreso: 10000/100000 trips insertados
+2025-12-01 19:58:36,040 - INFO -   Progreso: 20000/100000 trips insertados
+2025-12-01 19:58:38,259 - INFO -   Progreso: 30000/100000 trips insertados
+2025-12-01 19:58:40,324 - INFO -   Progreso: 40000/100000 trips insertados
+2025-12-01 19:58:42,166 - INFO -   Progreso: 50000/100000 trips insertados
+2025-12-01 19:58:44,197 - INFO -   Progreso: 60000/100000 trips insertados
+2025-12-01 19:58:46,059 - INFO -   Progreso: 70000/100000 trips insertados
+2025-12-01 19:58:48,291 - INFO -   Progreso: 80000/100000 trips insertados
+2025-12-01 19:58:50,412 - INFO -   Progreso: 90000/100000 trips insertados
+2025-12-01 19:58:52,317 - INFO -  100000 viajes insertados
+2025-12-01 19:58:52,342 - INFO - Generando 400000 entregas...
+2025-12-01 20:02:17,638 - INFO -   Progreso: 0/400001 deliveries insertados
+2025-12-01 20:02:26,238 - INFO -   Progreso: 50000/400001 deliveries insertados
+2025-12-01 20:02:35,114 - INFO -   Progreso: 100000/400001 deliveries insertados
+2025-12-01 20:02:43,466 - INFO -   Progreso: 150000/400001 deliveries insertados
+2025-12-01 20:02:51,759 - INFO -   Progreso: 200000/400001 deliveries insertados
+2025-12-01 20:03:00,761 - INFO -   Progreso: 250000/400001 deliveries insertados
+2025-12-01 20:03:09,880 - INFO -   Progreso: 300000/400001 deliveries insertados
+2025-12-01 20:03:27,704 - INFO -   Progreso: 350000/400001 deliveries insertados
+2025-12-01 20:03:43,156 - INFO -   Progreso: 400000/400001 deliveries insertados
+2025-12-01 20:03:43,157 - INFO -  400001 entregas insertadas
+2025-12-01 20:03:43,463 - INFO - Generando 5000 registros de mantenimiento...
+2025-12-01 20:03:47,597 - INFO -  5000 mantenimientos insertados
+2025-12-01 20:03:47,612 - INFO - 
+ RESUMEN DE GENERACIÓN DE DATOS
+2025-12-01 20:03:47,613 - INFO - ==================================================
+2025-12-01 20:03:47,615 - INFO -   vehicles: 200 registros
+2025-12-01 20:03:47,624 - INFO -   drivers: 400 registros
+2025-12-01 20:03:47,629 - INFO -   routes: 48 registros
+2025-12-01 20:03:47,639 - INFO -   trips: 100,000 registros
+2025-12-01 20:03:47,818 - INFO -   deliveries: 400,001 registros
+2025-12-01 20:03:47,820 - INFO -   maintenance: 5,000 registros
+2025-12-01 20:03:47,822 - INFO - 
+  TOTAL: 505,649 registros
+2025-12-01 20:03:48,082 - INFO - 
+  Entregas por viaje: AVG=4.0, MIN=2, MAX=6
+2025-12-01 20:03:48,082 - INFO - 
+ VALIDANDO CALIDAD DE DATOS...
+2025-12-01 20:03:48,117 - INFO -    Integridad referencial - Trips sin vehículo válido: OK
+2025-12-01 20:03:48,372 - INFO -    Integridad referencial - Deliveries sin trip válido: OK
+2025-12-01 20:03:48,393 - INFO -    Consistencia temporal - Trips con arrival < departure: OK
+2025-12-01 20:03:48,449 - INFO -    Consistencia de peso - Trips excediendo capacidad: OK
+2025-12-01 20:03:48,452 - INFO -    Entregas sin tracking number: OK
+2025-12-01 20:03:48,458 - INFO - 
+ Resumen guardado en generation_summary.json
+2025-12-01 20:03:48,459 - INFO - 
+ Conexión cerrada

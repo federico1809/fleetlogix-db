@@ -1,166 +1,166 @@
-# FleetLogix — Proyecto Integrador  
-**Autor: Federico Ceballos Torres — SoyHenry**
+# FleetLogix: Generación de Datos Sintéticos y Modelo Relacional en PostgreSQL
 
-
-## Modernización de Infraestructura de Datos Logísticos
-
-### Descripción General
-
-**FleetLogix** es una empresa de logística urbana que opera 200 vehículos realizando entregas de última milla en 5 ciudades.  
-El objetivo del proyecto es modernizar la infraestructura de datos, poblar una base PostgreSQL desde cero con más de **500.000 datos sintéticos realistas**, garantizar **integridad total** y preparar la base para **análisis operativos avanzados**.
+Este proyecto integrador desarrolla una infraestructura de datos moderna para FleetLogix, una empresa de transporte y logística que opera una flota de 200 vehículos realizando entregas de última milla en cinco ciudades principales de Colombia.
+El trabajo incluye la generación de más de 500.000 registros sintéticos realistas, el diseño y documentación del modelo relacional, la implementación de validaciones de calidad y KPIs operativos, y la propuesta de una arquitectura cloud escalable para análisis en tiempo real.
 
 ---
 
-## ✅ Avances incluidos
+## Objetivos
 
-- Reconstrucción del esquema de datos.
-- Normalización en modelo **Snowflake ligero** (a través de subtablas).
-- Generación sintética coherente de **505.000 registros**.
-- Corrección e importación fiable de datos a PostgreSQL.
-- Validación de calidad, integridad y consistencia temporal.
+- Poblar una base de datos PostgreSQL con más de 500.000 registros sintéticos realistas.
+- Garantizar integridad referencial, consistencia temporal y calidad de datos.
+- Documentar el modelo relacional y generar un diagrama ER profesional.
+- Diseñar un modelo dimensional tipo estrella para análisis OLAP.
+- Implementar queries operativas y KPIs logísticos.
+- Proponer una arquitectura cloud escalable para análisis en tiempo real.
 
 ---
 
-## 1) Modelo de Datos
+## Esquema SQL de generación de tablas
+Ver script SQL 'fleetlogix_db_schema.sql'
 
-La base contiene 6 tablas core:
+---
 
-| Tabla           | Tipo           | Descripción                                 |
-|----------------|----------------|---------------------------------------------|
-| vehicle_models | Dimensión      | Modelos y categorías de vehículos           |
-| vehicles       | Maestro        | La flota de 200 vehículos                   |
-| drivers        | Maestro        | 400 conductores y licencias                 |
-| routes         | Maestro        | 50 rutas entre 5 ciudades                   |
-| trips          | Transaccional  | 100k viajes realizados en 2 años            |
-| deliveries     | Transaccional  | 400k entregas asociadas a los viajes        |
-| maintenance    | Transaccional  | ~5k mantenimientos programados              |
+## Datos sintéticos generados
+- Deliveries: 400.001
+- Trips: 100.000
+- Maintenance: 5.000
+- Drivers: 400
+- Vehicles: 200
+- Routes: 48
 
-### Relaciones y normalización
+## Modelado de datos: ERD y esquema estrella
 
-- `vehicle_models → vehicles`
-- `vehicles → maintenance`
-- `drivers → trips`
-- `routes → trips`
-- `trips → deliveries`
+### Diagrama Entidad–Relación (ERD)
 
-### Diagrama ER
+El modelo relacional de FleetLogix está compuesto por seis tablas interconectadas que reflejan los procesos logísticos de la empresa:
 
+- **Maestras:** `vehicles`, `drivers`, `routes`
+- **Transaccionales:** `trips`, `deliveries`, `maintenance`
+
+Las relaciones están definidas mediante claves foráneas que garantizan integridad referencial. El diagrama ERD muestra dependencias, cardinalidades y restricciones únicas (placas, licencias, tracking numbers). Este modelo es óptimo para operaciones, pero no está diseñado para análisis multidimensional.
+
+Diagrama ERD:
+![Diagrama ERD FleetLogix](assets/Diagrama_Fleetlogix.png)
+
+---
+
+## Modelo estrella para análisis OLAP
+
+Para habilitar análisis agregados y dashboards, se diseñó un esquema dimensional tipo estrella:
+Este modelo permite responder preguntas como:
+- ¿Qué tipo de vehículo tiene mejor tasa de entregas a tiempo?
+- ¿Cómo varía el rendimiento por ciudad y por mes?
+- ¿Qué conductores tienen mayor eficiencia por peso entregado?
+
+---
+
+## Diagrama Mermaid del modelo estrella
 ```mermaid
 erDiagram
-    VEHICLE_MODELS ||--o{ VEHICLES: "modelo"
-    VEHICLES ||--o{ TRIPS: "realiza"
-    VEHICLES ||--o{ MAINTENANCE: "recibe"
-    DRIVERS ||--o{ TRIPS: "conduce"
-    ROUTES ||--o{ TRIPS: "define"
-    TRIPS ||--o{ DELIVERIES: "contiene"
+    fact_deliveries ||--o{ dim_vehicle : "utiliza"
+    fact_deliveries ||--o{ dim_driver : "realizado por"
+    fact_deliveries ||--o{ dim_route : "recorre"
+    fact_deliveries ||--o{ dim_time : "programada en"
+
+    dim_vehicle {
+        int vehicle_id PK
+        string license_plate UNIQUE
+        string vehicle_type
+        int capacity_kg
+        string status
+    }
+
+    dim_driver {
+        int driver_id PK
+        string first_name
+        string last_name
+        string license_number UNIQUE
+        date license_expiry
+        string employment_status
+    }
+
+    dim_route {
+        int route_id PK
+        string route_code UNIQUE
+        string origin_city
+        string destination_city
+        int distance_km
+        float duration_hours
+    }
+
+    dim_time {
+        date scheduled_date PK
+        int year
+        int month
+        int day
+        string weekday
+        string period_of_day
+    }
+
+    fact_deliveries {
+        int delivery_id PK
+        int vehicle_id FK
+        int driver_id FK
+        int route_id FK
+        date scheduled_date FK
+        string tracking_number UNIQUE
+        datetime scheduled_datetime
+        datetime delivered_datetime
+        string delivery_status
+        float package_weight_kg
+    }
 ```
 
-## 2) Generación de Datos Sintéticos
+## Validaciones de calidad
 
-### Script: fleetlogix_data_generator.py
-- El script genera todos los CSV (vehicles, drivers, routes, trips, deliveries, maintenance).
-- Asegura integridad referencial completa.
-- Consistencia temporal estricta (arrival > departure).
-- Mantenimiento cada +- 20 viajes.
-- 4 entregas promedio por viaje.
-- Produce datos realistas basados en:
-- Distribución horaria inteligente (get_hourly_distribution()).
-- Probabilidades ajustadas para fallas, accidentes y demoras.
-- 5 ciudades principales definidas por la empresa.
-
-Librerías utilizadas: Faker, pandas, NumPy, datetime, random.
-
-Salida: Todos los CSV generados quedan en /data/, listos para importar a PostgreSQL.
-
-
-## 3) Creación de Tablas
-
-### Script: fleetlogix_tables.sql
-- Este script elimina todas las tablas previas (DROP IF EXISTS).
-- Crea el modelo final 100% consistente con los CSV.
-- Define: 
-    - Primary Keys
-    - Foreign Keys
-- Tipos de datos adecuados (numeric, timestamp, varchar)
-- Constraints de integridad y normalización
-
-## 4) Carga de Datos a PostgreSQL (DBeaver)
-
-Importación manual de cada CSV asegurando así:
-- Routes:
-Ajustada tabla para coincidir exactamente con el CSV:
-    - route_code
-    - origin_city
-    - destination_city
-    - distance_km
-    - estimated_duration_hours
-    - toll_cost
-
-- Deliveries / Maintenance:
-Se corrigieron tipos numéricos, fechas y claves foráneas.
-Se activó correctamente "Truncate target table" cuando fue necesario.
-Elimina todas las tablas previas (DROP IF EXISTS).
-
-Crea el modelo final 100% consistente con los CSV.
-
-Importación controlada por lotes.
-
-### Define:
-- Primary Keys
-- Foreign Keys
-- Tipos de datos adecuados (numeric, timestamp, varchar)
-- Constraints de integridad (CHECK, UNIQUE cuando aplica)
-
-
-## 5) Validación de Calidad
-
-### Integridad referencial:
-Todos los vehicle_id, driver_id, route_id y trip_id existen. No hay claves huérfanas ni entregas vinculadas a viajes inválidos.
-
-### Consistencia temporal:
-departure_datetime < arrival_datetime
-scheduled_datetime < delivered_datetime
-Mantenimiento posterior al viaje previo
-
-### Distribución realista:
-100k viajes distribuidos durante 2 años
-400k entregas asociadas
-Mantenimientos con frecuencia lógica
-
-
-## 6) Modelo Híbrido (Star + Snowflake)
-
-### El modelo de datos final de FleetLogix no es puramente estrella ni puramente snowflake, sino un modelo híbrido.
-
-¿Por qué no es completamente estrella?
-En un esquema estrella puro la tabla de hechos se conecta directamente a dimensiones desnormalizadas.
-En FleetLogix trips y deliveries sí son tablas de hechos, pero las dimensiones como vehicles, drivers, routes no están totalmente desnormalizadas.
-
-¿Por qué no es completamente snowflake?
-En un copo de nieve puro las dimensiones se dividen en subdimensiones normalizadas.
-En FleetLogix hay normalización parcial:
-- routes → cities
-- vehicles → vehicle_models
-- vehicles → maintenance
-Pero no se llega a una normalización total.
-
-### Diagrama del modelo híbrido
-#### Tabla descriptiva
-| Elemento | Característica | Tipo |
-| trips y deliveries | tablas de hechos | Estrella |
-| vehicles, drivers, routes | dimensiones simples | Estrella |
-| vehicle_models, cities | normalización parcial | Nieve |
-| relaciones entre rutas → viajes → entregas | jerarquías normalizadas | Nieve |
-
-
-## 7) Conclusión y próximos pasos
-
-El modelo de datos de FleetLogix logra un equilibrio entre eficiencia operativa y consistencia estructural, gracias a su diseño híbrido entre estrella y copo de nieve. La generación sintética de más de 500.000 registros, junto con la validación exhaustiva y la carga controlada en PostgreSQL, permite contar con una base robusta, escalable y lista para análisis avanzados.
-
-### Posibles extensiones futuras
-- Modelos predictivos de demanda y mantenimiento.
-- Optimización de rutas y asignación de recursos.
-- Integración con APIs externas y sistemas de monitoreo en tiempo real.
-- La documentación, scripts y diagramas entregados aseguran trazabilidad, reproducibilidad y claridad técnica para cualquier equipo que desee continuar el desarrollo.
+### Se implementaron queries para verificar:
+- Integridad referencial (FK válidas)
+- Consistencia temporal (arrival > departure)
+- Coherencia de peso (no se excede capacidad del vehículo)
+- Unicidad de claves (placas, licencias, tracking numbers)
+✔ Todas las validaciones fueron exitosas.
 
 ---
+
+## KPIs operativos
+
+### Se calcularon métricas clave como:
+- % de entregas a tiempo vs retrasadas
+- Consumo promedio de combustible por tipo de vehículo
+- Utilización de capacidad por viaje
+- Mantenimientos por cada 1.000 km recorridos
+- Promedio de entregas por viaje
+
+---
+
+## Ejecución
+
+Para levantar y validar el proyecto FleetLogix:
+
+1. Crear la base de datos en PostgreSQL:
+   - Conectarse al servidor PostgreSQL desde DBeaver o psql.
+   - Ejecutar el script `fleetlogix_db_schema.sql` para crear las tablas.
+
+2. Generar datos sintéticos
+   - Ejecutar el script principal:
+     ```bash
+     python fleetlogix_data_generator.py
+     ```
+   - Se generarán más de 500.000 registros distribuidos en las 6 tablas.
+
+3. Verificar carga de datos
+   - Abrir DBeaver y conectarse a la base `fleetlogix`.
+   - Validar conteo de registros:
+     ```sql
+     SELECT COUNT(*) FROM trips;
+     SELECT COUNT(*) FROM deliveries;
+     ```
+   - Revisar logs en `data_generation.log` y resumen en `generation_summary.json`.
+
+---
+
+## Autor
+Federico Ceballos Torres.
+
+- Este README fue elaborado como parte del proyecto integrador de la carrera Data Science en SoyHenry -
