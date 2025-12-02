@@ -56,7 +56,7 @@ Este modelo permite responder preguntas como:
 ---
 
 ## Diagrama Mermaid del modelo estrella
-```mermaid
+
 erDiagram
     fact_deliveries ||--o{ dim_vehicle : "utiliza"
     fact_deliveries ||--o{ dim_driver : "realizado por"
@@ -110,7 +110,6 @@ erDiagram
         string delivery_status
         float package_weight_kg
     }
-```
 
 ## Validaciones de calidad
 
