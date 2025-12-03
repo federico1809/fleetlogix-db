@@ -1,163 +1,124 @@
-# FleetLogix: Generación de Datos Sintéticos y Modelo Relacional en PostgreSQL
+# Fleetlogix - Proyecto Integrador Data Science
 
-Este proyecto integrador desarrolla una infraestructura de datos moderna para FleetLogix, una empresa de transporte y logística que opera una flota de 200 vehículos realizando entregas de última milla en cinco ciudades principales de Colombia.
-El trabajo incluye la generación de más de 500.000 registros sintéticos realistas, el diseño y documentación del modelo relacional, la implementación de validaciones de calidad y KPIs operativos, y la propuesta de una arquitectura cloud escalable para análisis en tiempo real.
+Fleetlogix es una empresa de transporte y logística que opera una flota de 200 vehículos realizando entregas de última milla en cinco ciudades principales de Colombia.  
+Este proyecto integra modelado relacional, generación de datos sintéticos masivos, validaciones de calidad, KPIs logísticos y una arquitectura cloud escalable.
 
 ---
 
 ## Objetivos
-
-- Poblar una base de datos PostgreSQL con más de 500.000 registros sintéticos realistas.
-- Garantizar integridad referencial, consistencia temporal y calidad de datos.
-- Documentar el modelo relacional y generar un diagrama ER profesional.
-- Diseñar un modelo dimensional tipo estrella para análisis OLAP.
-- Implementar queries operativas y KPIs logísticos.
-- Proponer una arquitectura cloud escalable para análisis en tiempo real.
+- Poblar una base de datos PostgreSQL con más de **500.000 registros sintéticos** generados con Python.
+- Garantizar integridad referencial y reglas de negocio mediante claves primarias, foráneas e índices.
+- Documentar el modelo relacional con un **diagrama ERD** y un **modelo dimensional tipo estrella** para OLAP.
+- Implementar queries SQL para validaciones de calidad y KPIs operativos.
+- Proponer una arquitectura cloud con Kafka, Flink/Spark, Data Lake y Power BI para análisis en tiempo real.
 
 ---
 
-## Esquema SQL de generación de tablas
-Ver script SQL 'fleetlogix_db_schema.sql'
+## Modelo Relacional (ERD)
+El modelo relacional se compone de seis tablas:
 
----
-
-## Datos sintéticos generados
-- Deliveries: 400.001
-- Trips: 100.000
-- Maintenance: 5.000
-- Drivers: 400
-- Vehicles: 200
-- Routes: 48
-
-## Modelado de datos: ERD y esquema estrella
-
-### Diagrama Entidad–Relación (ERD)
-
-El modelo relacional de FleetLogix está compuesto por seis tablas interconectadas que reflejan los procesos logísticos de la empresa:
-
-- **Maestras:** `vehicles`, `drivers`, `routes`
+- **Maestras:** `vehicles`, `drivers`, `routes`  
 - **Transaccionales:** `trips`, `deliveries`, `maintenance`
 
-Las relaciones están definidas mediante claves foráneas que garantizan integridad referencial. El diagrama ERD muestra dependencias, cardinalidades y restricciones únicas (placas, licencias, tracking numbers). Este modelo es óptimo para operaciones, pero no está diseñado para análisis multidimensional.
+Restricciones técnicas:
+- Claves primarias y foráneas para integridad referencial.
+- Restricciones de unicidad en placas, licencias y tracking numbers.
+- Índices en campos críticos para optimizar queries.
 
-Diagrama ERD:
-![Diagrama ERD FleetLogix](assets/Diagrama_Fleetlogix.png)
-
----
-
-## Modelo estrella para análisis OLAP
-
-Para habilitar análisis agregados y dashboards, se diseñó un esquema dimensional tipo estrella:
-Este modelo permite responder preguntas como:
-- ¿Qué tipo de vehículo tiene mejor tasa de entregas a tiempo?
-- ¿Cómo varía el rendimiento por ciudad y por mes?
-- ¿Qué conductores tienen mayor eficiencia por peso entregado?
+![Diagrama ERD](assets/Diagrama_Fleetlogix.png)
 
 ---
 
-## Diagrama Mermaid del modelo estrella
-erDiagram
+## Generación de Datos Sintéticos
+**Herramientas:** Python + Faker + pandas + numpy + psycopg2  
 
-    fact_deliveries ||--o{ dim_vehicle : "utiliza"
-    fact_deliveries ||--o{ dim_driver : "realizado por"
-    fact_deliveries ||--o{ dim_route : "recorre"
-    fact_deliveries ||--o{ dim_time : "programada en"
+**Volumen generado:**
+- 200 vehículos  
+- 400 conductores  
+- 50 rutas  
+- 100.000 viajes  
+- 400.001 entregas  
+- 5.000 mantenimientos  
 
-    dim_vehicle {
-        int vehicle_id PK
-        string license_plate UNIQUE
-        string vehicle_type
-        int capacity_kg
-        string status
-    }
-
-    dim_driver {
-        int driver_id PK
-        string first_name
-        string last_name
-        string license_number UNIQUE
-        date license_expiry
-        string employment_status
-    }
-
-    dim_route {
-        int route_id PK
-        string route_code UNIQUE
-        string origin_city
-        string destination_city
-        int distance_km
-        float duration_hours
-    }
-
-    dim_time {
-        date scheduled_date PK
-        int year
-        int month
-        int day
-        string weekday
-        string period_of_day
-    }
-
-    fact_deliveries {
-        int delivery_id PK
-        int vehicle_id FK
-        int driver_id FK
-        int route_id FK
-        date scheduled_date FK
-        string tracking_number UNIQUE
-        datetime scheduled_datetime
-        datetime delivered_datetime
-        string delivery_status
-        float package_weight_kg
-    }
-
-## Validaciones de calidad
-
-### Se implementaron queries para verificar:
-- Integridad referencial (FK válidas)
-- Consistencia temporal (arrival > departure)
-- Coherencia de peso (no se excede capacidad del vehículo)
-- Unicidad de claves (placas, licencias, tracking numbers)
-✔ Todas las validaciones fueron exitosas.
+> Nota: Se generaron 400.001 entregas en lugar de 400.000 debido a la naturaleza probabilística del generador.  
+> Cada viaje recibe entre 2 y 6 entregas según distribución aleatoria controlada, lo que produce pequeñas variaciones alrededor del valor esperado.
 
 ---
 
-## KPIs operativos
+## Validaciones de Calidad
+- Integridad referencial: todas las claves foráneas válidas.  
+- Consistencia temporal: `arrival_datetime > departure_datetime`.  
+- Reglas de negocio:  
+  - Peso ≤ capacidad del vehículo  
+  - Tracking numbers únicos  
+  - Entregas por viaje entre 2 y 6  
 
-### Se calcularon métricas clave como:
-- % de entregas a tiempo vs retrasadas
+Ejemplo de validación:
+```sql
+-- Trips sin vehículo válido (resultado esperado: 0)
+SELECT COUNT(*) AS invalid_trips
+FROM trips t
+LEFT JOIN vehicles v ON v.vehicle_id = t.vehicle_id
+WHERE v.vehicle_id IS NULL;
+```
+## KPIs Operativos
+- Porcentaje de entregas a tiempo vs retrasadas
 - Consumo promedio de combustible por tipo de vehículo
 - Utilización de capacidad por viaje
-- Mantenimientos por cada 1.000 km recorridos
+- Mantenimientos por cada 1.000 km
 - Promedio de entregas por viaje
 
----
+Ejemplo:
+
+```sql
+-- Entregas a tiempo vs con retraso
+WITH delivered AS (
+    SELECT delivery_id,
+           CASE WHEN delivered_datetime <= scheduled_datetime + INTERVAL '30 minutes'
+                THEN 'on_time' ELSE 'late' END AS status
+    FROM deliveries
+)
+SELECT status, COUNT(*) AS cnt,
+       ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct
+FROM delivered
+WHERE status IS NOT NULL
+GROUP BY status;
+```
+Resultado: 90.15% entregas a tiempo, 9.85% con retraso.
+
+## Propuesta de Arquitectura en la Nube
+- Ingesta: PostgreSQL + CDC (Debezium)
+- Streaming: Apache Kafka
+- Procesamiento: Apache Flink / Spark Streaming
+- Almacenamiento: Data Lake + Data Warehouse
+- Visualización: Power BI / Looker
+- Gobernanza: Data Catalog + Lineage
+
+La arquitectura cloud funciona como un flujo continuo que integra captura, transmisión, procesamiento, almacenamiento y visualización de datos. Los cambios en PostgreSQL se detectan en tiempo real mediante CDC y se envían a través de Kafka. Flink o Spark Streaming procesan los eventos de manera paralela, los resultados se guardan en un Data Lake y en un Data Warehouse, y finalmente dashboards interactivos permiten decisiones rápidas con gobernanza que asegura calidad y trazabilidad.
+
 
 ## Ejecución
+1. Abrir PowerShell y ubicarse en la carpeta de scripts:
 
-1. Abrir PowerShell.
-2. Ir a la ubicación local de los scripts ejemplo: cd "RUTA\LOCAL\DE\LA\CARPETA"
-Enter.
-3. .\run_fleetlogix.ps1
-Enter.
-Si solicita contraseña es la definida en el script .py (puede pedirla una vez antes de crear la DB y otra vez antes de crear el esquema, es la misma ambas veces ya que es la del usuario).
-4. Crear una nueva conexión para visualizar el esquema en DBeaver:
-- Database -> New Database Connection -> PostgreSQL ->
-- Rellenar con los parámetros definidos en el script:
-Host: localhost
-Port: 5432
-Database: fleetlogixdb
-Username: postgres
-Password: fede0309
+```powershell
+cd "RUTA\LOCAL\DE\LA\CARPETA"
+.\run_fleetlogix.ps1
+```
+2. Crear conexión en DBeaver:
+    - Host: localhost
+    - Port: 5432
+    - Database: fleetlogixdb
+    - Username: postgres
+    - Password: definida en cada script de acuerdo a cada configuración local (o al servidor)
 
-5. Verificar carga de datos
-- En la misma DB abrir y ejecutrar las siguientes queries en cualquier orden, una a una o todas juntas:
-'01_InventarioDeTablasPKsFKsIndices'
-'02_ValidacionesCalidadConsistencia.sql'
-'03_KPIsOperativosConsultasClave.sql'
+3. Ejecutar queries de validación y KPIs:
+    - 01_InventarioDeTablasPKsFKsIndices.sql
+    - 02_ValidacionesCalidadConsistencia.sql
+    - 03_KPIsOperativosConsultasClave.sql
 
----
-## Autor
-Federico Ceballos Torres.
 
-- Este README fue elaborado como parte del proyecto integrador de la carrera Data Science en SoyHenry -
+## Elaborado por Federico Ceballos Torres
+### Avance 1 del Módulo 2
+### Proyecto integrador
+### Carrera Data Science
+## SoyHenry

@@ -145,3 +145,61 @@ DETAIL:  Key (license_plate)=(UDA125) already exists.
  Resumen guardado en generation_summary.json
 2025-12-02 15:06:18,106 - INFO - 
  Conexión cerrada
+2025-12-02 18:22:17,322 - INFO -  Conexión exitosa a PostgreSQL
+2025-12-02 18:22:17,323 - INFO - Truncando tablas antes de generar datos...
+2025-12-02 18:22:17,418 - INFO - Tablas truncadas correctamente
+2025-12-02 18:22:17,418 - INFO - Generando 200 vehículos...
+2025-12-02 18:22:17,477 - INFO -  200 vehículos insertados
+2025-12-02 18:22:17,477 - INFO - Generando 400 conductores...
+2025-12-02 18:22:17,667 - INFO -  400 conductores insertados
+2025-12-02 18:22:17,667 - INFO - Generando 50 rutas...
+2025-12-02 18:22:17,681 - INFO -  50 rutas insertadas
+2025-12-02 18:22:17,682 - INFO - Generando 100000 viajes...
+2025-12-02 18:22:26,921 - INFO -   Progreso: 0/100000 trips insertados
+2025-12-02 18:22:28,655 - INFO -   Progreso: 10000/100000 trips insertados
+2025-12-02 18:22:30,619 - INFO -   Progreso: 20000/100000 trips insertados
+2025-12-02 18:22:32,996 - INFO -   Progreso: 30000/100000 trips insertados
+2025-12-02 18:22:34,968 - INFO -   Progreso: 40000/100000 trips insertados
+2025-12-02 18:22:37,022 - INFO -   Progreso: 50000/100000 trips insertados
+2025-12-02 18:22:39,145 - INFO -   Progreso: 60000/100000 trips insertados
+2025-12-02 18:22:41,511 - INFO -   Progreso: 70000/100000 trips insertados
+2025-12-02 18:22:43,576 - INFO -   Progreso: 80000/100000 trips insertados
+2025-12-02 18:22:45,546 - INFO -   Progreso: 90000/100000 trips insertados
+2025-12-02 18:22:47,318 - INFO -  100000 viajes insertados
+2025-12-02 18:22:47,344 - INFO - Generando 400000 entregas...
+2025-12-02 18:25:31,521 - INFO -   Progreso: 0/400001 deliveries insertados
+2025-12-02 18:25:42,075 - INFO -   Progreso: 50000/400001 deliveries insertados
+2025-12-02 18:25:51,971 - INFO -   Progreso: 100000/400001 deliveries insertados
+2025-12-02 18:26:02,817 - INFO -   Progreso: 150000/400001 deliveries insertados
+2025-12-02 18:26:13,359 - INFO -   Progreso: 200000/400001 deliveries insertados
+2025-12-02 18:26:24,093 - INFO -   Progreso: 250000/400001 deliveries insertados
+2025-12-02 18:26:34,866 - INFO -   Progreso: 300000/400001 deliveries insertados
+2025-12-02 18:26:45,205 - INFO -   Progreso: 350000/400001 deliveries insertados
+2025-12-02 18:26:55,510 - INFO -   Progreso: 400000/400001 deliveries insertados
+2025-12-02 18:26:55,511 - INFO -  400001 entregas insertadas
+2025-12-02 18:26:55,763 - INFO - Generando 5000 registros de mantenimiento...
+2025-12-02 18:26:58,709 - INFO -  5000 mantenimientos insertados
+2025-12-02 18:26:58,728 - INFO - 
+ RESUMEN DE GENERACIÓN DE DATOS
+2025-12-02 18:26:58,729 - INFO - ==================================================
+2025-12-02 18:26:58,731 - INFO -   vehicles: 200 registros
+2025-12-02 18:26:58,734 - INFO -   drivers: 400 registros
+2025-12-02 18:26:58,737 - INFO -   routes: 48 registros
+2025-12-02 18:26:58,748 - INFO -   trips: 100,000 registros
+2025-12-02 18:26:58,906 - INFO -   deliveries: 400,001 registros
+2025-12-02 18:26:58,910 - INFO -   maintenance: 5,000 registros
+2025-12-02 18:26:58,911 - INFO - 
+  TOTAL: 505,649 registros
+2025-12-02 18:26:59,109 - INFO - 
+  Entregas por viaje: AVG=4.0, MIN=2, MAX=6
+2025-12-02 18:26:59,109 - INFO - 
+ VALIDANDO CALIDAD DE DATOS...
+2025-12-02 18:26:59,136 - INFO -    Integridad referencial - Trips sin vehículo válido: OK
+2025-12-02 18:26:59,369 - INFO -    Integridad referencial - Deliveries sin trip válido: OK
+2025-12-02 18:26:59,385 - INFO -    Consistencia temporal - Trips con arrival < departure: OK
+2025-12-02 18:26:59,434 - INFO -    Consistencia de peso - Trips excediendo capacidad: OK
+2025-12-02 18:26:59,437 - INFO -    Entregas sin tracking number: OK
+2025-12-02 18:26:59,441 - INFO - 
+ Resumen guardado en generation_summary.json
+2025-12-02 18:26:59,442 - INFO - 
+ Conexión cerrada
